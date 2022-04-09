@@ -13,5 +13,5 @@
 - The website is hosted using Google Cloud Run in a Docker container. 
 - We recieved our domain, picnote.tech, from Domain.com.
 - We are using the python-docx library to create the output document
-- This application uses Django for the backend, which makes it easy to parse the response from the Vision API, construct the docx output file, and send it to the web page. 
+- This application uses Django for the backend, which makes it easy to parse the response from the Google Cloud Vision API, construct the docx output file, and send it to the web page. 
 - On our frontend, we are using Bootstrap 5.

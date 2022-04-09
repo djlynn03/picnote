@@ -3,6 +3,8 @@ import io
 import os
 from enum import Enum
 from PIL import Image, ImageDraw
+import docx
+
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'credentials.json'
 
 
@@ -124,6 +126,139 @@ def drawTextboxes(inputFile):
     outputFile = "".join(inputFile[::-1][len(fileType) + 1:])[::-1] + "_drewTextBoxes." + fileType
     render_doc_text(inputFile, outputFile)
 
-# detect_document("test1.jpg")
-# drawTextboxes("test1.jpg")
-# drawTextboxes("test2.png")
+def test_transcribeText(image_file):
+    """Returns document bounds given an image."""
+    fileName = image_file
+    client = vision.ImageAnnotatorClient()
+
+    bounds = []
+
+    with io.open(image_file, "rb") as image_file:
+        content = image_file.read()
+
+    image = vision.Image(content=content)
+
+    response = client.document_text_detection(image=image)
+    document = response.full_text_annotation
+    
+    outDocument = docx.Document()
+
+    for page in response.full_text_annotation.pages:
+        for block in page.blocks:
+            for paragraph in block.paragraphs:
+                paragraph_text = ' '.join([''.join([symbol.text for symbol in word.symbols]) for word in paragraph.words])
+                outDocument.add_paragraph(paragraph_text)
+    
+    fileType = (fileName[::-1].split(".")[0])[::-1]
+    outputFile = "".join(fileName[::-1][len(fileType) + 1:])[::-1] + "_document.docx"
+    outDocument.save(outputFile)
+
+def localize_objects(path):
+    """Localize objects in the local image.
+
+    Args:
+    path: The path to the local file.
+    """
+    from google.cloud import vision
+    client = vision.ImageAnnotatorClient()
+
+    with open(path, 'rb') as image_file:
+        content = image_file.read()
+    image = vision.Image(content=content)
+
+    objects = client.object_localization(
+        image=image).localized_object_annotations
+
+    print('Number of objects found: {}'.format(len(objects)))
+    for object_ in objects:
+        print('\n{} (confidence: {})'.format(object_.name, object_.score))
+        print('Normalized bounding polygon vertices: ')
+        for vertex in object_.bounding_poly.normalized_vertices:
+            print(' - ({}, {})'.format(vertex.x, vertex.y))
+
+def image2file(image):
+    """Return `image` as PNG file-like object."""
+    image_file = io.BytesIO()
+    image.save(image_file, format="PNG")
+    return image_file
+
+def test_transcribeObjects(imageFile):
+    """Localize objects in the local image.
+
+    Args:
+    path: The path to the local file.
+    """
+
+    img = Image.open(imageFile)
+    imgheight = img.size[1]
+    imgwidth = img.size[0]
+    client = vision.ImageAnnotatorClient()
+
+    outDocument = docx.Document()
+    with open(imageFile, 'rb') as image_file:
+        content = image_file.read()
+    image = vision.Image(content=content)
+
+    objects = client.object_localization(
+        image=image).localized_object_annotations
+    fileType = (imageFile[::-1].split(".")[0])[::-1]
+    outputFile = "".join(imageFile[::-1][len(fileType) + 1:])[::-1] + "_document.docx"
+
+    for object_ in objects:
+        print(object_.bounding_poly.normalized_vertices[0].x, object_.bounding_poly.normalized_vertices[0].y)
+        print(object_.bounding_poly.normalized_vertices[2].x, object_.bounding_poly.normalized_vertices[2].y)
+        
+        x1 = int(object_.bounding_poly.normalized_vertices[0].x*imgwidth)
+        x2 = int(object_.bounding_poly.normalized_vertices[2].x*imgwidth)
+        y1 = int(object_.bounding_poly.normalized_vertices[0].y*imgwidth)
+        y2 = int(object_.bounding_poly.normalized_vertices[2].y*imgwidth)
+        cropArea = (x1, y1, x2, y2)
+        croppedImage = img.crop(cropArea)
+        outDocument.add_picture(image2file(croppedImage))
+    outDocument.save(outputFile)
+        
+def transcribeAll(imageFile):
+    fileName = imageFile
+    client = vision.ImageAnnotatorClient()
+    bounds = []
+    documentElements = []
+    img = Image.open(imageFile)
+    imgheight = img.size[1]
+    imgwidth = img.size[0]
+    with io.open(imageFile, "rb") as image_file:
+        content = image_file.read()
+    image = vision.Image(content=content)
+    response = client.document_text_detection(image=image)
+    document = response.full_text_annotation
+    outDocument = docx.Document()
+    for page in response.full_text_annotation.pages:
+        for block in page.blocks:
+            for paragraph in block.paragraphs:
+                paragraph_text = ' '.join([''.join([symbol.text for symbol in word.symbols]) for word in paragraph.words])
+                print(paragraph.__dict__)
+                # print([vertex for vertex in paragraph.bounding_box.vertices])
+                documentElements.append(paragraph_text)
+    with open(imageFile, 'rb') as image_file:
+        content = image_file.read()
+    image = vision.Image(content=content)
+    objects = client.object_localization(
+        image=image).localized_object_annotations
+    for object_ in objects:
+        x1 = int(object_.bounding_poly.normalized_vertices[0].x*imgwidth)
+        x2 = int(object_.bounding_poly.normalized_vertices[2].x*imgwidth)
+        y1 = int(object_.bounding_poly.normalized_vertices[0].y*imgwidth)
+        y2 = int(object_.bounding_poly.normalized_vertices[2].y*imgwidth)
+        cropArea = (x1, y1, x2, y2)
+        croppedImage = img.crop(cropArea)
+        documentElements.append(image2file(croppedImage))
+    fileType = (fileName[::-1].split(".")[0])[::-1]
+    outputFile = "".join(fileName[::-1][len(fileType) + 1:])[::-1] + "_document.docx"
+    for element in documentElements:
+        if type(element) == str:
+            outDocument.add_paragraph(element)
+        else:
+            outDocument.add_picture(element)
+    outDocument.save(outputFile)
+
+drawTextboxes("test1.jpg")
+transcribeAll("test1.jpg")
