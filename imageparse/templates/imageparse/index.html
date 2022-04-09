@@ -49,8 +49,11 @@
 			submit.style.display = 'inline-block';
 		};
 		var showLoader = function(){
+			var output = document.getElementById('final');
+			output.remove()
 			var loader = document.getElementById('loader');
 			loader.style.display = 'inline-block';
+
 		}
 	</script>
 
@@ -59,11 +62,11 @@
 <body>
 	<div class="container">
 		<center>
-			<h1 class="shine hvr-grow animate-charcter">PicNote</h1>
+			{% comment %} <h1 class="shine hvr-grow animate-charcter">PicNote</h1> {% endcomment %}
+			<span data-toggle="tooltip" data-placement="bottom" title="What is Picnote?">
+				<button class="shine hvr-grow animate-charcter btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 500;">PicNote</button>
+			</span>
 		</center>
-		<center><button type="button" class="shine btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">What
-				is PicNote?</button></center>
-		</br>
 		<center>
 			<p>By <a href="https://www.linkedin.com/in/derekzhang0000/" target="_blank">Derek Zhang</a>, <a href="https://www.linkedin.com/in/duncan-lynn/" target="_blank">Duncan Lynn</a>, <a href="https://www.linkedin.com/in/sam-aldeguer-a44b561b6/" target="_blank">Sam Aldeguer</a>, <a href="https://www.linkedin.com/in/sepehr-noori-a39039220/" target="_blank">Sepehr Noori</a></p>
 		</center>
@@ -76,9 +79,9 @@
 			<button style="display:none;" type="button" class="shine btn btn-primary" id="preview" data-bs-toggle="modal"
 				data-bs-target="#previewModal">Preview</button>
 			<button type="submit" class="shine btn btn-primary" id="submit" onclick="showLoader()" style="display:none;">Submit</button>
-			<div class="loader"></div>
 		</form>
 		<p style="color:red;">{{ error }}</p>
+		<div class="loader" id="loader"></div>
 
 		{% if output %}
 		<img src="{{ output }}" id="final" style="display:block; width:100%;">

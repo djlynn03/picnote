@@ -78,6 +78,10 @@ body {
     /* max-height: calc(100% - 20px); */
 }
 
+.container{
+    padding-bottom: 50px;
+}
+
 .shine:after {
     content: "";
     position: absolute;
@@ -126,13 +130,17 @@ a {
     color:  black;
 }
 .loader {
+    display: none;
     margin: 0 auto;
+    position: absolute;
     border: 18px solid #f3f3f3; /* Light grey */
     border-top: 18px solid #3498db; /* Blue */
     border-radius: 50%;
+    left: calc(50% - 60px);
     width: 120px;
     height: 120px;
     animation: spin 1s linear infinite;
+    box-shadow: 0 0 8px rgb(0 0 0 / 50%) inset, 0 0 8px rgb(0 0 0 / 50%);
   }
   @keyframes spin {
     0% { transform: rotate(0deg); }
