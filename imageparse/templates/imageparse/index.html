@@ -73,8 +73,6 @@
 			<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 			  <label for="formFile" class="form-label">Upload image of notes:</label>
-			  <input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100">
-			  <br>
 			  <input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100" onchange="loadFile(event)">
 			  <br>
 			  <button style="display:none; margin-bottom:10px;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
