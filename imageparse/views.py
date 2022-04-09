@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
+
 import base64
 from .utils import image_intake
-# Create your views here.
 
 class IndexView(generic.ListView):
     template_name = 'imageparse/index.html'
@@ -13,7 +14,7 @@ class IndexView(generic.ListView):
         return render(request, self.template_name)
     
     def post(self, request, *args, **kwargs):
-        print(request.POST, request.FILES)
+        print(request.POST.data, request.FILES)
 
         if 'file' not in request.FILES:
             return JsonResponse({'error': 'No file uploaded'})
@@ -28,6 +29,9 @@ class IndexView(generic.ListView):
         final_image[0].save(buffered, format="JPEG")
         img_str = base64.b64encode(buffered.getvalue())
         return render(request, self.template_name, {'output': "data:image/png;base64," + img_str.decode('utf-8')})
-    
+
+@csrf_exempt 
 def upload(request, *args, **kwargs):
-    pass
+    print(request.POST, request.FILES)
+    raise Exception('This is a test')
+    return JsonResponse({'error': 'No file uploaded'})

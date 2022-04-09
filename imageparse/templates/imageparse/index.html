@@ -1,142 +1,128 @@
 {% load static %}
 <html>
-	<head>
-		<title>PicNote</title>
-		<link href='https://fonts.googleapis.com/css?family=Alegreya Sans SC' rel='stylesheet'>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-		<link rel="shortcut icon" href="{% static 'imageparse/newicon32.ico' %}" type="image/x-icon">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		<script>
-			var loadFile = function(event) {
-				{% comment %} if (event.target.files[0]){
+
+<head>
+	<title>PicNote</title>
+	<link href='https://fonts.googleapis.com/css?family=Alegreya Sans SC' rel='stylesheet'>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+	<link rel="shortcut icon" href="{% static 'imageparse/newicon32.ico' %}" type="image/x-icon">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="{% static 'imageparse/style.css' %}" type="text/css">
+	<script>
+		{% comment %} function httpGet(theUrl, image) {
+			console.log(image)
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open()
+			xmlHttp.open("POST", theUrl, false); // false for synchronous request
+			xmlHttp.send(image);
+			return xmlHttp.responseText;
+		} {% endcomment %}
+		var loadFile = function (event) {
+			if (event.target.files[0]) {
+				var csrftoken = $('[name="csrfmiddlewaretoken"]').val();
 				$.ajax({
-					url: "{% url 'imageparse:upload' %}",
-					type: "POST",
+					url: "{% url 'upload' %}",
+					type: 'GET',
+					data: {
+						test: "test",
+						{% comment %} image: event.target.files[0],
+						csrfmiddlewaretoken: csrftoken {% endcomment %}
+					},
+					processData: false,
+					success: function (data) {
+						console.log(data)
+					}
+				});
+
+				{% comment %} httpGet('upload', event.target.files[0]); {% endcomment %}
+				{% comment %} $.ajax({
+					url: "{% url 'upload' %}",
+					method: "POST",
 					data: {
 						image: event.target.files[0],
-						csrfmiddlewaretoken: "{% csrf_token %}"
+						csrfmiddlewaretoken: '{{ csrf_token }}'
 					},
-					success: function(data) {
+					success: function (data) {
 						$("#image").attr("src", data);
 					}
-				})
-			} {% endcomment %}
-				var output = document.getElementById('output');
-				output.src = URL.createObjectURL(event.target.files[0]);
-				
-				var prev = document.getElementById('preview');
-				prev.style.display = 'inline-block';
-			};
-		</script>
-		<style>
-			input#formFile:hover {
-				box-shadow: 0 0 6px 0px rgb(0 0 0 / 50%);
+				}) {% endcomment %}
 			}
-			.modal-dialog {
-				max-width: 80%;
-				margin: 1.75rem auto;
-			}
-			h1 {
-				font-size: 60px;
-			}
-			
-			body {
-				animation: fadein 2s;
-				--webkit-animation: fadein 2s;
-				/* Safari, Chrome and Opera > 12.1 */
-				background-color: #f4fbff
-			}
-			
-			@keyframes fadein {
-				from {
-					opacity: 0;
-				}
-			
-				to {
-					opacity: 1;
-				}
-			}
-			
-			.animate-charcter {
-				text-transform: uppercase;
-				background-image: linear-gradient(-225deg,
-						/* #8BCFFF 0%, */
-						#5BBAFF 29%,
-						#ff1361 67%,
-						#8BCFFF 100%);
-				background-size: auto auto;
-				background-clip: border-box;
-				background-size: 200% auto;
-				color: #fff;
-				background-clip: text;
-				text-fill-color: transparent;
-				-webkit-background-clip: text;
-				-webkit-text-fill-color: transparent;
-				animation: textclip 4s linear infinite;
-				display: inline-block;
-				font-size: 80px;
-			}
-			
-			@keyframes textclip {
-				to {
-					background-position: 200% center;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<center><h1 class="animate-charcter">PicNote</h1></center>
-			<center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">What is PicNote?</button></center>
-			</br>
-			<center><p>By Sam Aldeguer, Sepehr Noori, Derek Zhang and Duncan Lynn</p></center>
-			<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
-				{% csrf_token %}
-			  <label for="formFile" class="form-label">Upload image of notes:</label>
-			  <input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100" onchange="loadFile(event)">
-			  <br>
-			  <button style="display:none;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
-			  <button type="submit" class="btn btn-primary" id="submit">Submit</button>
-			</form>
-			<p style="color:red;">{{ error }}</p>
+			var output = document.getElementById('output');
+			output.src = URL.createObjectURL(event.target.files[0]);
 
-			{% if output %}
-			<img src="{{ output }}" id="final" style="display:block; width:100%;">
-			{% endif %}
-		</div>
-		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			  <div class="modal-content">
+			var prev = document.getElementById('preview');
+			prev.style.display = 'inline-block';
+		};
+	</script>
+
+</head>
+
+<body>
+	<div class="container">
+		<center>
+			<h1 class="animate-charcter">PicNote</h1>
+		</center>
+		<center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">What
+				is PicNote?</button></center>
+		</br>
+		<center>
+			<p>By Sam Aldeguer, Sepehr Noori, Derek Zhang and Duncan Lynn</p>
+		</center>
+		<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<label for="formFile" class="form-label">Upload image of notes:</label>
+			<input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100"
+				onchange="loadFile(event)">
+			<br>
+			<button style="display:none;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal"
+				data-bs-target="#previewModal">Preview</button>
+			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
+		</form>
+		<p style="color:red;">{{ error }}</p>
+
+		{% if output %}
+		<img src="{{ output }}" id="final" style="display:block; width:100%;">
+		{% endif %}
+	</div>
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
 				<div class="modal-header">
-				  <h5 class="modal-title" id="exampleModalLabel">PicNote</h5>
-				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<h5 class="modal-title" id="exampleModalLabel">PicNote</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-				 Picnote is a program designed to analyze an image of notes/whiteboard using Vision API from Google Cloud. A .docx file of the image is then created with the texts shown as plain text while keeping pictures/diagrams. This not only makes your notes more readible, but also more sharible to others.
+					Picnote is a program designed to analyze an image of notes/whiteboard using Vision API from Google
+					Cloud. A .docx file of the image is then created with the texts shown as plain text while keeping
+					pictures/diagrams. This not only makes your notes more readible, but also more sharible to others.
 				</div>
 				<div class="modal-footer">
-				  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
-			  </div>
 			</div>
-		  </div>
+		</div>
+	</div>
 
-		  <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			  <div class="modal-content">
+	<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
 				<div class="modal-header">
-				  <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
-				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<h5 class="modal-title" id="exampleModalLabel">Preview</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<img id="output" src="" alt="Preview not available" style="width:100%;">
 				</div>
 				<div class="modal-footer">
-				  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
-			  </div>
 			</div>
-		  </div>
-	</body>
+		</div>
+	</div>
+</body>
+
 </html>
