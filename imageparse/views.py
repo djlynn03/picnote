@@ -14,12 +14,20 @@ class IndexView(generic.ListView):
     
     def post(self, request, *args, **kwargs):
         print(request.POST, request.FILES)
-        final_image = image_intake(request.FILES['file'])
+
+        if 'file' not in request.FILES:
+            return JsonResponse({'error': 'No file uploaded'})
+        try:
+            final_image = image_intake(request.FILES['file'])
+        except:
+            return render(request, self.template_name, {'error': 'Invalid file type'})
 
         from io import BytesIO
 
         buffered = BytesIO()
         final_image[0].save(buffered, format="JPEG")
         img_str = base64.b64encode(buffered.getvalue())
-        return render(request, 'imageparse/index.html', {'output': "data:image/png;base64," + img_str.decode('utf-8')})
-        return render(request, self.template_name, {"output": final_image[0], "original": request.FILES['file']})
+        return render(request, self.template_name, {'output': "data:image/png;base64," + img_str.decode('utf-8')})
+    
+def upload(request, *args, **kwargs):
+    pass

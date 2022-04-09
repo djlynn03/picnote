@@ -10,7 +10,7 @@ h1 {
 }
 
 body {
-
+    animation: fadein 2s;
     --webkit-animation: fadein 2s;
     /* Safari, Chrome and Opera > 12.1 */
     background-color: #f4fbff

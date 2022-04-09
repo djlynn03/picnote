@@ -7,9 +7,21 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 		<link rel="shortcut icon" href="{% static 'imageparse/newicon32.ico' %}" type="image/x-icon">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		<link rel="stylesheet" href="{% static 'imageparse/style.css' %}">
 		<script>
 			var loadFile = function(event) {
+				{% comment %} if (event.target.files[0]){
+				$.ajax({
+					url: "{% url 'imageparse:upload' %}",
+					type: "POST",
+					data: {
+						image: event.target.files[0],
+						csrfmiddlewaretoken: "{% csrf_token %}"
+					},
+					success: function(data) {
+						$("#image").attr("src", data);
+					}
+				})
+			} {% endcomment %}
 				var output = document.getElementById('output');
 				output.src = URL.createObjectURL(event.target.files[0]);
 				
@@ -17,6 +29,61 @@
 				prev.style.display = 'inline-block';
 			};
 		</script>
+		<style>
+			input#formFile:hover {
+				box-shadow: 0 0 6px 0px rgb(0 0 0 / 50%);
+			}
+			.modal-dialog {
+				max-width: 80%;
+				margin: 1.75rem auto;
+			}
+			h1 {
+				font-size: 60px;
+			}
+			
+			body {
+				animation: fadein 2s;
+				--webkit-animation: fadein 2s;
+				/* Safari, Chrome and Opera > 12.1 */
+				background-color: #f4fbff
+			}
+			
+			@keyframes fadein {
+				from {
+					opacity: 0;
+				}
+			
+				to {
+					opacity: 1;
+				}
+			}
+			
+			.animate-charcter {
+				text-transform: uppercase;
+				background-image: linear-gradient(-225deg,
+						/* #8BCFFF 0%, */
+						#5BBAFF 29%,
+						#ff1361 67%,
+						#8BCFFF 100%);
+				background-size: auto auto;
+				background-clip: border-box;
+				background-size: 200% auto;
+				color: #fff;
+				background-clip: text;
+				text-fill-color: transparent;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				animation: textclip 4s linear infinite;
+				display: inline-block;
+				font-size: 80px;
+			}
+			
+			@keyframes textclip {
+				to {
+					background-position: 200% center;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<div class="container">
@@ -33,6 +100,7 @@
 			  <button style="display:none;" type="button" class="shine btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
 			  <button type="submit" class="shine btn btn-primary" id="submit">Submit</button>
 			</form>
+			<p style="color:red;">{{ error }}</p>
 
 			{% if output %}
 			<img src="{{ output }}" id="final" style="display:block; width:100%;">
