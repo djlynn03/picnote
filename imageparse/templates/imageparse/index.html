@@ -9,6 +9,9 @@
 		<link rel="shortcut icon" href="{% static 'imageparse/icon32.ico' %}" type="image/x-icon">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 		<style>
+			input#formFile:hover {
+				box-shadow: 0 0 6px 0px rgb(0 0 0 / 50%);
+			}
 			h1 {
 				font-size:  60px;
 			}
@@ -70,16 +73,21 @@
 			<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 			  <label for="formFile" class="form-label">Upload image of notes:</label>
+<<<<<<< HEAD
 			  <br>
 			  <input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100" onchange="loadFile(event)">
 			  <br>
 			  <button style="display:none;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+=======
+			  <input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100" onchange="loadFile(event)">
+			  <br>
+			  <button style="display:none; margin-bottom:10px;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+>>>>>>> dff7d3d536b59bff714dd5e8b18339c5a72a0bca
 			  <button type="submit" class="btn btn-primary" id="submit">Submit</button>
 			</form>
 
 			{% if output %}
-			<br>
-			{{ output }}
+			<img src="{{ output }}" id="final" style="display:block; width:100%; margin-bottom: 20px;">
 			{% endif %}
 		</div>
 		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -103,11 +111,11 @@
 			<div class="modal-dialog">
 			  <div class="modal-content">
 				<div class="modal-header">
-				  <h5 class="modal-title" id="exampleModalLabel">PicNote</h5>
+				  <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
 				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<img id="output" src="" alt="og" style="width:100%;">
+					<img id="output" src="" alt="Preview not available" style="width:100%;">
 				</div>
 				<div class="modal-footer">
 				  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
