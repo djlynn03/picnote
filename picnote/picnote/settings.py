@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'imageparse.apps.ImageparseConfig',
+    'imageparse.apps.ImageparseConfig',
 ]
 
 MIDDLEWARE = [

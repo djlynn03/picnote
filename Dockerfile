@@ -25,7 +25,7 @@ ENV PYTHONUNBUFFERED 1
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
+RUN export PYTHONPATH=$PYTHONPATH:$APP_HOME
 # Copy local code to the container image.
 COPY . .
 
