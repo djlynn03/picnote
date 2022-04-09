@@ -64,13 +64,13 @@
 <body>
 	<div class="container">
 		<center>
-			<h1 class="animate-charcter">PicNote</h1>
+			<h1 class="shine hvr-grow animate-charcter">PicNote</h1>
 		</center>
-		<center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">What
+		<center><button type="button" class="shine btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">What
 				is PicNote?</button></center>
 		</br>
 		<center>
-			<p>By Sam Aldeguer, Sepehr Noori, Derek Zhang and Duncan Lynn</p>
+			<p>By <a href="https://www.linkedin.com/in/derekzhang0000/" target="_blank">Derek Zhang</a>, <a href="https://www.linkedin.com/in/duncan-lynn/" target="_blank">Duncan Lynn</a>, <a href="https://www.linkedin.com/in/sam-aldeguer-a44b561b6/" target="_blank">Sam Aldeguer</a>, <a href="https://www.linkedin.com/in/sepehr-noori-a39039220/" target="_blank">Sepehr Noori</a></p>
 		</center>
 		<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
@@ -78,9 +78,9 @@
 			<input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100"
 				onchange="loadFile(event)">
 			<br>
-			<button style="display:none;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal"
+			<button style="display:none;" type="button" class="shine btn btn-primary" id="preview" data-bs-toggle="modal"
 				data-bs-target="#previewModal">Preview</button>
-			<button type="submit" class="btn btn-primary" id="submit">Submit</button>
+			<button type="submit" class="shine btn btn-primary" id="submit">Submit</button>
 		</form>
 		<p style="color:red;">{{ error }}</p>
 
