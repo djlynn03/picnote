@@ -1,7 +1,10 @@
 input#formFile:hover {
     box-shadow: 0 0 6px 0px rgb(0 0 0 / 50%);
 }
-
+.modal-dialog {
+    max-width: 80%;
+    margin: 1.75rem auto;
+}
 h1 {
     font-size: 60px;
 }
