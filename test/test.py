@@ -221,7 +221,7 @@ def transcribeAll(imageFile):
     fileName = imageFile
     client = vision.ImageAnnotatorClient()
     bounds = []
-    documentElements = []
+    documentElements = {}
     img = Image.open(imageFile)
     imgheight = img.size[1]
     imgwidth = img.size[0]
@@ -235,12 +235,14 @@ def transcribeAll(imageFile):
         for block in page.blocks:
             for paragraph in block.paragraphs:
                 paragraph_text = ' '.join([''.join([symbol.text for symbol in word.symbols]) for word in paragraph.words])
-                print(paragraph.__dict__)
-                # print([vertex for vertex in paragraph.bounding_box.vertices])
-                documentElements.append(paragraph_text)
+                tempCoords = []
+                for coord in ''.join([str(vertex) for vertex in paragraph.bounding_box.vertices]).split("\n"):
+                    if len(coord) > 3:
+                        if coord[0] == "y":
+                            tempCoords.append(int(coord[3:]))
+                documentElements[paragraph_text] = max(tempCoords)
     with open(imageFile, 'rb') as image_file:
         content = image_file.read()
-    image = vision.Image(content=content)
     objects = client.object_localization(
         image=image).localized_object_annotations
     for object_ in objects:
@@ -250,15 +252,16 @@ def transcribeAll(imageFile):
         y2 = int(object_.bounding_poly.normalized_vertices[2].y*imgwidth)
         cropArea = (x1, y1, x2, y2)
         croppedImage = img.crop(cropArea)
-        documentElements.append(image2file(croppedImage))
+        documentElements[image2file(croppedImage)] = max(y1, y2)
     fileType = (fileName[::-1].split(".")[0])[::-1]
     outputFile = "".join(fileName[::-1][len(fileType) + 1:])[::-1] + "_document.docx"
-    for element in documentElements:
+    documentElements = dict(sorted(documentElements.items(), key=lambda item: item[1]))
+    for element in documentElements.keys():
         if type(element) == str:
             outDocument.add_paragraph(element)
         else:
             outDocument.add_picture(element)
     outDocument.save(outputFile)
 
-drawTextboxes("test1.jpg")
-transcribeAll("test1.jpg")
+# drawTextboxes("test2.png")
+transcribeAll("test16.jpg")
