@@ -21,16 +21,17 @@
 	<body>
 		<div class="container">
 			<center><h1 class="animate-charcter">PicNote</h1></center>
-			<center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">What is PicNote?</button></center>
+			<center><button type="button" class="shine btn btn-primary" id="whatIs" data-bs-toggle="modal" data-bs-target="#exampleModal">What is PicNote?</button></center>
 			</br>
 			<center><p>By Sam Aldeguer, Sepehr Noori, Derek Zhang and Duncan Lynn</p></center>
 			<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 			  <label for="formFile" class="form-label">Upload image of notes:</label>
 			  <input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100" onchange="loadFile(event)">
+			  <form class="box" method="post" action="" enctype="multipart/form-data">
 			  <br>
-			  <button style="display:none;" type="button" class="btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
-			  <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+			  <button style="display:none;" type="button" class="shine btn btn-primary" id="preview" data-bs-toggle="modal" data-bs-target="#previewModal">Preview</button>
+			  <button type="submit" class="shine btn btn-primary" id="submit">Submit</button>
 			</form>
 
 			{% if output %}
@@ -48,7 +49,7 @@
 				 Picnote is a program designed to analyze an image of notes/whiteboard using Vision API from Google Cloud. A .docx file of the image is then created with the texts shown as plain text while keeping pictures/diagrams. This not only makes your notes more readible, but also more sharible to others.
 				</div>
 				<div class="modal-footer">
-				  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				  <button type="button" class="shine btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
 			  </div>
 			</div>
@@ -65,7 +66,7 @@
 					<img id="output" src="" alt="Preview not available" style="width:100%;">
 				</div>
 				<div class="modal-footer">
-				  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				  <button type="button" class="shine btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
 			  </div>
 			</div>
