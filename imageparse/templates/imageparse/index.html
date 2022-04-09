@@ -24,32 +24,29 @@
 		var loadFile = function (event) {
 			if (event.target.files[0]) {
 				var csrftoken = $('[name="csrfmiddlewaretoken"]').val();
-				$.ajax({
-					url: "{% url 'upload' %}",
-					type: 'GET',
-					data: {
-						test: "test",
-						{% comment %} image: event.target.files[0],
-						csrfmiddlewaretoken: csrftoken {% endcomment %}
-					},
-					processData: false,
-					success: function (data) {
-						console.log(data)
-					}
-				});
+				var file = event.target.files[0];
+				var formData = new FormData();
+				formData.append('image', file);
+				formData.append('csrfmiddlewaretoken', csrftoken);
+				for (var key of formData.entries()) {
+					console.log(key[0] + ', ' + key[1]);
+				}
+				fetch('/upload/', {
+					method: 'POST',
+					body: formData,
+				})
+				.then((response) => response.json())
+				.then((responseJson) => {
+				  console.log(responseJson);
+				  var output = document.getElementById('output');
+				  output.src = responseJson.new_preview;
+				})
 
-				{% comment %} httpGet('upload', event.target.files[0]); {% endcomment %}
-				{% comment %} $.ajax({
-					url: "{% url 'upload' %}",
-					method: "POST",
-					data: {
-						image: event.target.files[0],
-						csrfmiddlewaretoken: '{{ csrf_token }}'
-					},
-					success: function (data) {
-						$("#image").attr("src", data);
-					}
+				{% comment %} .then(function(response){
+					console.log(response.data)
+
 				}) {% endcomment %}
+
 			}
 			var output = document.getElementById('output');
 			output.src = URL.createObjectURL(event.target.files[0]);

@@ -60,6 +60,24 @@ body {
    
 }
 
+#previewModal{
+    overflow-y: hidden;
+    max-height: calc(100% - 20px);
+}
+
+#previewModal .modal-dialog{
+    max-height: calc(90% - 20px);
+}
+
+#previewModal .modal-dialog .modal-content{
+    height: 90%;
+}
+
+#previewModal .modal-dialog .modal-content .modal-body{
+    overflow-y: scroll;
+    /* max-height: calc(100% - 20px); */
+}
+
 .shine:after {
     content: "";
     position: absolute;

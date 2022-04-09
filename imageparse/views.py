@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
+from PIL import Image
 
 import base64
 from .utils import image_intake
@@ -14,8 +15,6 @@ class IndexView(generic.ListView):
         return render(request, self.template_name)
     
     def post(self, request, *args, **kwargs):
-        print(request.POST.data, request.FILES)
-
         if 'file' not in request.FILES:
             return JsonResponse({'error': 'No file uploaded'})
         try:
@@ -30,8 +29,13 @@ class IndexView(generic.ListView):
         img_str = base64.b64encode(buffered.getvalue())
         return render(request, self.template_name, {'output': "data:image/png;base64," + img_str.decode('utf-8')})
 
-@csrf_exempt 
 def upload(request, *args, **kwargs):
     print(request.POST, request.FILES)
-    raise Exception('This is a test')
-    return JsonResponse({'error': 'No file uploaded'})
+    from io import BytesIO
+    buffered = BytesIO()
+    
+    image = request.FILES['image']
+    image = image_intake(image)[0]
+    image.save(buffered, format="JPEG")
+    final_image = base64.b64encode(buffered.getvalue())
+    return JsonResponse({'new_preview': "data:image/png;base64," + final_image.decode('utf-8')})
