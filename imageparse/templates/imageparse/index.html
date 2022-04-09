@@ -13,14 +13,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="{% static 'imageparse/style.css' %}" type="text/css">
 	<script>
-		{% comment %} function httpGet(theUrl, image) {
-			console.log(image)
-			var xmlHttp = new XMLHttpRequest();
-			xmlHttp.open()
-			xmlHttp.open("POST", theUrl, false); // false for synchronous request
-			xmlHttp.send(image);
-			return xmlHttp.responseText;
-		} {% endcomment %}
 		var loadFile = function (event) {
 			if (event.target.files[0]) {
 				var csrftoken = $('[name="csrfmiddlewaretoken"]').val();
@@ -53,7 +45,13 @@
 
 			var prev = document.getElementById('preview');
 			prev.style.display = 'inline-block';
+			var submit = document.getElementById('submit');
+			submit.style.display = 'inline-block';
 		};
+		var showLoader = function(){
+			var loader = document.getElementById('loader');
+			loader.style.display = 'inline-block';
+		}
 	</script>
 
 </head>
@@ -77,7 +75,8 @@
 			<br>
 			<button style="display:none;" type="button" class="shine btn btn-primary" id="preview" data-bs-toggle="modal"
 				data-bs-target="#previewModal">Preview</button>
-			<button type="submit" class="shine btn btn-primary" id="submit">Submit</button>
+			<button type="submit" class="shine btn btn-primary" id="submit" onclick="showLoader()" style="display:none;">Submit</button>
+			<div class="loader"></div>
 		</form>
 		<p style="color:red;">{{ error }}</p>
 
