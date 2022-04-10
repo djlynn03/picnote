@@ -13,6 +13,23 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="{% static 'imageparse/style.css' %}" type="text/css">
 	<script>
+		function dataURLtoFile(dataurl, filename) {
+ 
+			var arr = dataurl.split(','),
+				mime = arr[0].match(/:(.*?);/)[1],
+				bstr = atob(arr[1]), 
+				n = bstr.length, 
+				u8arr = new Uint8Array(n);
+				
+			while(n--){
+				u8arr[n] = bstr.charCodeAt(n);
+			}
+			
+			return new File([u8arr], filename, {type:mime});
+		}
+		var downloadFile = function(data, filname){
+			window.open(URL.createObjectURL(dataURLtoFile(data, filname)))
+		}
 		var loadFile = function (event) {
 			if (event.target.files[0]) {
 				var csrftoken = $('[name="csrfmiddlewaretoken"]').val();
@@ -32,12 +49,12 @@
 				  console.log(responseJson);
 				  var output = document.getElementById('output');
 				  output.src = responseJson.new_preview;
+
+				  var download = document.getElementById('download');
+				  download.style.display = 'block';
 				})
 
-				{% comment %} .then(function(response){
-					console.log(response.data)
-
-				}) {% endcomment %}
+				
 
 			}
 			var output = document.getElementById('output');
@@ -49,10 +66,15 @@
 			submit.style.display = 'inline-block';
 		};
 		var showLoader = function(){
-			var output = document.getElementById('final');
-			output.remove()
+			try{
+				var output = document.getElementById('final');
+				output.remove()
+			}catch{}
 			var loader = document.getElementById('loader');
 			loader.style.display = 'inline-block';
+
+			var download = document.getElementById('download');
+			download.style.display = 'none';
 
 		}
 	</script>
@@ -63,7 +85,7 @@
 	<div class="container">
 		<center>
 			{% comment %} <h1 class="shine hvr-grow animate-charcter">PicNote</h1> {% endcomment %}
-			<span data-toggle="tooltip" data-placement="bottom" title="What is Picnote?">
+			<span data-toggle="tooltip" data-placement="bottom" title="What is PicNote?">
 				<button class="shine hvr-grow animate-charcter btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-weight: 500;">PicNote</button>
 			</span>
 		</center>
@@ -72,7 +94,7 @@
 		</center>
 		<form class="mb-3" action="/" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-			<label for="formFile" class="form-label">Upload image of notes:</label>
+			<label for="formFile" class="form-label">Upload image of notes, lecture slides, textbook pages, or homework:</label>
 			<input name="file" class="form-control" type="file" id="formFile" accept="image/*, image/heic" size="100"
 				onchange="loadFile(event)">
 			<br>
@@ -84,7 +106,8 @@
 		<div class="loader" id="loader"></div>
 
 		{% if output %}
-		<img src="{{ output }}" id="final" style="display:block; width:100%;">
+		<button type="button" class="shine btn btn-primary" id="download" onclick="downloadFile('{{docx}}', 'picnote_document.docx')">Download</button>
+		<embed src="{{ output }}" id="final" style="display:block; width:100%;">
 		{% endif %}
 	</div>
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -95,7 +118,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					Picnote is a program designed to analyze an image of notes/whiteboard using Vision API from Google
+					PicNote is a program designed to analyze an image of notes/whiteboard using Vision API from Google
 					Cloud. A .docx file of the image is then created with the texts shown as plain text while keeping
 					pictures/diagrams. This not only makes your notes more readible, but also more sharible to others.
 				</div>
