@@ -102,9 +102,9 @@
 		<p style="color:red;">{{ error }}</p>
 		<div class="loader" id="loader"></div>
 
-		{% if output %}
+		{% if docx %}
 		<button type="button" class="shine btn btn-primary" id="download" onclick="downloadFile('{{docx}}', 'picnote_document.docx')">Download</button>
-		<embed src="{{ output }}" id="final" style="display:block; width:100%;">
+
 		{% endif %}
 	</div>
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

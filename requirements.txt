@@ -9,5 +9,4 @@ Pillow==9.0.1
 pillow-heif==0.2.0
 python-docx==0.8.11
 google-cloud-vision==2.7.2
-docx2pdf==0.1.8
-pywin32==303
+# aspose-words==22.4.0
