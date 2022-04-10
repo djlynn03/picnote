@@ -4,10 +4,7 @@
 
 # Features
 - Transcribes handwriting to text
-- Transcribes math equations
 - Places pictures in the same relative location to the text
-- Increase contrast of pictures
-- Includes labels for pictures
 
 # Design
 - The website is hosted using Google Cloud Run in a Docker container. 
